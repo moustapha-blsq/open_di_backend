@@ -49,7 +49,6 @@ class UserView(APIView):
         token = request.COOKIES.get('jwt')
         if not token:
             raise AuthenticationFailed('Authentification échouée')
-
         try:
             payload = jwt.decode(token, 'secret', algorithms=['HS256'])
         except jwt.ExpiredSignatureError:
@@ -67,3 +66,4 @@ class logoutView(APIView):
             'message' : 'success'
         }
         return response
+
