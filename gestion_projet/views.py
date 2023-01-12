@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from .models import Projet
 from .serializers import ProjetSerializer
 from rest_framework import status
+import csv
 import pandas as pd
 
 class ShowListProject(APIView):
@@ -13,8 +14,6 @@ class ShowListProject(APIView):
         return Response(serializer.data)
 
 class CreateNewProject(APIView):
-    # def post(self, request):
-    #     return Projet.objects.create(request)
     def post(self, request):
         serializer = ProjetSerializer(data=request.data)
         if serializer.is_valid():
@@ -32,11 +31,28 @@ class GetProjetByID(APIView):
         return Response(serializer.data)
 
 class AddSourceCSV(APIView):
-    def get(self, request, file_path, nbline):
+    def get(self, request):
         mylist = []
-        filename=file_path
-        file = pd.read_csv(filename)
-        # for f in file:
-        #     mylist.append(f)
-        #serializer = ProjetSerializer(file)
-        return Response(file.head(nbline))
+        #file_name = 'gestion_projet/instances.csv'
+        file_header = []
+        with open('gestion_projet/instances.csv') as datas:
+            file_data = csv.reader(datas, delimiter=',')
+            #file_header = next(file_data)
+            for row in file_data:
+                mylist.append(row)
+       # serializer = ProjetSerializer(mylist)
+
+        return Response(mylist)
+
+class GetSourceHeader(APIView):
+    def get(self, request):
+        mylist = []
+        #file_name = 'gestion_projet/instances.csv'
+        file_header = []
+        with open('gestion_projet/instances.csv') as datas:
+            file_data = csv.reader(datas, delimiter=',')
+            file_header = next(file_data)
+            # for row in file_data:
+            #     mylist.append(row)
+       # serializer = ProjetSerializer(mylist)
+        return Response(file_header)
